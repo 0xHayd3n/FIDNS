@@ -57,7 +57,11 @@ export default function WalletConnect() {
       if (farcasterConnector) {
         // Auto-connect after a short delay to ensure everything is ready
         const timer = setTimeout(() => {
-          connect({ connector: farcasterConnector }).catch(console.error)
+          try {
+            connect({ connector: farcasterConnector })
+          } catch (error) {
+            console.error('Failed to auto-connect:', error)
+          }
         }, 300)
         return () => clearTimeout(timer)
       }
