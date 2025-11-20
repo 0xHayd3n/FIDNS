@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useWallet } from '@/hooks/useWallet'
 import { useFarcasterUser } from '@/hooks/useFarcasterUser'
 import { shortenAddress } from '@/lib/ethereum'
@@ -50,24 +49,7 @@ export default function WalletConnect() {
     )
   }
 
-  // Auto-connect if Farcaster wallet is available
-  useEffect(() => {
-    if (user && !isConnected && !isConnecting && connectors.length > 0) {
-      const farcasterConnector = connectors.find(c => c.id === 'injected' || c.type === 'injected')
-      if (farcasterConnector) {
-        // Auto-connect after a short delay to ensure everything is ready
-        const timer = setTimeout(() => {
-          try {
-            connect({ connector: farcasterConnector })
-          } catch (error) {
-            console.error('Failed to auto-connect:', error)
-          }
-        }, 300)
-        return () => clearTimeout(timer)
-      }
-    }
-  }, [user, isConnected, isConnecting, connectors, connect])
-
+  // Manual connect button - no auto-connect
   const farcasterConnector = connectors.find(c => c.id === 'injected' || c.type === 'injected')
   
   if (farcasterConnector && !isConnected) {
