@@ -1,0 +1,18 @@
+{
+  "accountAssociation": {
+    "type": "custody",
+    "custodyAddress": "0x0000000000000000000000000000000000000000"
+  },
+  "frame": {
+    "version": "next",
+    "imageUrl": "https://your-domain.com/og-image.png",
+    "button": {
+      "title": "FIDNS",
+      "action": {
+        "type": "launch_frame",
+        "target": "https://your-domain.com"
+      }
+    }
+  }
+}
+
