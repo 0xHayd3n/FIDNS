@@ -17,8 +17,8 @@ export default function MintForm() {
 
   if (!user) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-        <p className="text-red-800 dark:text-red-200">
+      <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-6">
+        <p className="text-[#A0A0A0]">
           Unable to load Farcaster user data.
         </p>
       </div>
@@ -27,9 +27,9 @@ export default function MintForm() {
 
   if (!isConnected) {
     return (
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-        <p className="text-yellow-800 dark:text-yellow-200">
-          Please connect your wallet to mint your .FID domain.
+      <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-6">
+        <p className="text-[#A0A0A0]">
+          Please connect your wallet to register your domain.
         </p>
       </div>
     )
@@ -37,9 +37,9 @@ export default function MintForm() {
 
   if (!isBaseNetwork) {
     return (
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-        <p className="text-yellow-800 dark:text-yellow-200">
-          Please switch to Base network to mint your .FID domain.
+      <div className="bg-[#1A1A1A] border border-[#F59E0B]/20 rounded-2xl p-6">
+        <p className="text-[#F59E0B]">
+          Please switch to Base network to register your domain.
         </p>
       </div>
     )
@@ -50,30 +50,37 @@ export default function MintForm() {
 
   if (checkingMint) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <div className="text-center">Checking mint status...</div>
+      <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8">
+        <div className="text-center text-[#A0A0A0]">Checking registration status...</div>
       </div>
     )
   }
 
   if (isMinted) {
     return (
-      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-2 text-green-800 dark:text-green-200">
-          Domain Already Minted!
-        </h3>
-        <p className="text-green-700 dark:text-green-300 mb-4">
-          Your domain <strong>{domainName}</strong> has already been minted.
+      <div className="bg-[#1A1A1A] border border-[#10B981]/30 rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-full bg-[#10B981]/20 flex items-center justify-center">
+            <svg className="w-6 h-6 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-white">
+            Domain Registered!
+          </h3>
+        </div>
+        <p className="text-[#A0A0A0] mb-4">
+          Your domain <strong className="text-white gradient-purple-text">{domainName}</strong> is already registered.
         </p>
         {tokenId && (
-          <p className="text-sm text-green-600 dark:text-green-400">
+          <p className="text-sm text-[#A0A0A0] mb-6">
             Token ID: {tokenId}
           </p>
         )}
-        <div className="mt-4">
+        <div className="mt-6">
           <a
             href={`/manage/${domainName}`}
-            className="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+            className="inline-block px-6 py-3 gradient-purple hover:opacity-90 text-white rounded-lg transition-all font-medium"
           >
             Manage DNS Records
           </a>
@@ -84,22 +91,29 @@ export default function MintForm() {
 
   if (isConfirmed) {
     return (
-      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-2 text-green-800 dark:text-green-200">
-          Domain Minted Successfully!
-        </h3>
-        <p className="text-green-700 dark:text-green-300 mb-4">
-          Your domain <strong>{domainName}</strong> has been minted.
+      <div className="bg-[#1A1A1A] border border-[#10B981]/30 rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-full bg-[#10B981]/20 flex items-center justify-center">
+            <svg className="w-6 h-6 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-white">
+            Domain Registered Successfully!
+          </h3>
+        </div>
+        <p className="text-[#A0A0A0] mb-4">
+          Your domain <strong className="text-white gradient-purple-text">{domainName}</strong> has been registered.
         </p>
         {hash && (
-          <p className="text-sm text-green-600 dark:text-green-400 mb-4">
-            Transaction: <a href={`https://basescan.org/tx/${hash}`} target="_blank" rel="noopener noreferrer" className="underline">{hash.slice(0, 10)}...{hash.slice(-8)}</a>
+          <p className="text-sm text-[#A0A0A0] mb-6">
+            Transaction: <a href={`https://sepolia.basescan.org/tx/${hash}`} target="_blank" rel="noopener noreferrer" className="text-[#8A63D2] hover:text-[#A78BEA] underline">{hash.slice(0, 10)}...{hash.slice(-8)}</a>
           </p>
         )}
-        <div className="mt-4">
+        <div className="mt-6">
           <a
             href={`/manage/${domainName}`}
-            className="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+            className="inline-block px-6 py-3 gradient-purple hover:opacity-90 text-white rounded-lg transition-all font-medium"
           >
             Manage DNS Records
           </a>
@@ -109,36 +123,36 @@ export default function MintForm() {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 className="text-2xl font-semibold mb-4">Mint Your .FID Domain</h2>
+    <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8">
+      <h2 className="text-3xl font-bold mb-6 gradient-purple-text">Register Your Domain</h2>
 
-      <div className="space-y-4 mb-6">
-        <div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Farcaster ID</p>
-          <p className="text-lg font-medium">{user.fid}</p>
+      <div className="space-y-6 mb-8">
+        <div className="bg-[#0F0F0F] rounded-xl p-4 border border-[#2A2A2A]">
+          <p className="text-sm text-[#A0A0A0] mb-1">Farcaster ID</p>
+          <p className="text-lg font-semibold text-white">{user.fid}</p>
         </div>
 
         {user.username && !hasENS && (
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Username</p>
-            <p className="text-lg font-medium">{user.username}</p>
+          <div className="bg-[#0F0F0F] rounded-xl p-4 border border-[#2A2A2A]">
+            <p className="text-sm text-[#A0A0A0] mb-1">Username</p>
+            <p className="text-lg font-semibold text-white">{user.username}</p>
           </div>
         )}
 
-        <div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Domain Name</p>
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{domainName}</p>
+        <div className="bg-gradient-to-r from-[#8A63D2]/20 to-[#6B4FA3]/20 rounded-xl p-6 border border-[#8A63D2]/30">
+          <p className="text-sm text-[#A0A0A0] mb-2">Domain Name</p>
+          <p className="text-3xl font-bold gradient-purple-text">{domainName}</p>
         </div>
 
-        <div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Minting Price</p>
-          <p className="text-lg font-medium">{formatEth(MINT_PRICE)} ETH</p>
+        <div className="bg-[#0F0F0F] rounded-xl p-4 border border-[#2A2A2A]">
+          <p className="text-sm text-[#A0A0A0] mb-1">Registration Fee</p>
+          <p className="text-xl font-semibold text-white">{formatEth(MINT_PRICE)} ETH</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
-          <p className="text-red-800 dark:text-red-200">
+        <div className="bg-[#1A1A1A] border border-[#EF4444]/30 rounded-xl p-4 mb-6">
+          <p className="text-[#EF4444]">
             {error.message || 'An error occurred'}
           </p>
         </div>
@@ -147,31 +161,31 @@ export default function MintForm() {
       {!showConfirm ? (
         <button
           onClick={() => setShowConfirm(true)}
-          className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+          className="w-full px-6 py-4 gradient-purple hover:opacity-90 text-white rounded-xl font-semibold transition-all text-lg"
         >
-          Mint Domain
+          Register Domain
         </button>
       ) : (
         <div className="space-y-4">
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-            <p className="text-yellow-800 dark:text-yellow-200 text-sm">
-              You are about to mint <strong>{domainName}</strong> for {formatEth(MINT_PRICE)} ETH.
+          <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-xl p-4">
+            <p className="text-[#F59E0B] text-sm">
+              You are about to register <strong>{domainName}</strong> for {formatEth(MINT_PRICE)} ETH.
               This action cannot be undone.
             </p>
           </div>
           <div className="flex gap-4">
             <button
               onClick={() => setShowConfirm(false)}
-              className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors"
+              className="flex-1 px-6 py-3 bg-[#1A1A1A] border border-[#2A2A2A] hover:border-[#8A63D2] text-white rounded-xl transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={() => address && mint(address)}
               disabled={isPending || isConfirming}
-              className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+              className="flex-1 px-6 py-3 gradient-purple hover:opacity-90 text-white rounded-xl font-semibold transition-all disabled:opacity-50"
             >
-              {isPending ? 'Confirm in Wallet...' : isConfirming ? 'Minting...' : 'Confirm Mint'}
+              {isPending ? 'Confirm in Wallet...' : isConfirming ? 'Registering...' : 'Confirm Registration'}
             </button>
           </div>
         </div>

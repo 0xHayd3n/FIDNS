@@ -15,32 +15,37 @@ export default function DNSRecordList({ records, onDelete, onEdit, isDeleting }:
 
   if (records.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-        No DNS records found. Add your first record below.
+      <div className="text-center py-12 text-[#A0A0A0]">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#1A1A1A] flex items-center justify-center">
+          <svg className="w-8 h-8 text-[#8A63D2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </div>
+        <p>No DNS records found. Add your first record above.</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {records.map((record, index) => (
         <div
           key={`${record.type}-${record.name}-${index}`}
-          className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
+          className="flex items-center justify-between p-5 bg-[#0F0F0F] rounded-xl border border-[#2A2A2A] hover:border-[#8A63D2]/30 transition-colors"
         >
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded text-sm font-medium">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="px-3 py-1 gradient-purple text-white rounded-lg text-sm font-semibold">
                 {record.type}
               </span>
-              <span className="font-medium">{record.name || '@'}</span>
+              <span className="font-medium text-white">{record.name || '@'}</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 break-all">{record.value}</p>
+            <p className="text-sm text-[#A0A0A0] break-all font-mono">{record.value}</p>
           </div>
           <div className="flex gap-2 ml-4">
             <button
               onClick={() => onEdit(record)}
-              className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded transition-colors"
+              className="px-4 py-2 text-sm bg-[#1A1A1A] border border-[#2A2A2A] hover:border-[#8A63D2] text-white rounded-lg transition-colors"
             >
               Edit
             </button>
@@ -52,7 +57,7 @@ export default function DNSRecordList({ records, onDelete, onEdit, isDeleting }:
                 }
               }}
               disabled={isDeleting && deletingRecord?.type === record.type && deletingRecord?.name === record.name}
-              className="px-3 py-1 text-sm bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-900/50 rounded transition-colors disabled:opacity-50"
+              className="px-4 py-2 text-sm bg-[#1A1A1A] border border-[#EF4444]/30 hover:border-[#EF4444] text-[#EF4444] rounded-lg transition-colors disabled:opacity-50"
             >
               {isDeleting && deletingRecord?.type === record.type && deletingRecord?.name === record.name
                 ? 'Deleting...'

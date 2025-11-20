@@ -34,20 +34,20 @@ export default function DNSRecordForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="type" className="block text-sm font-medium mb-1">
+        <label htmlFor="type" className="block text-sm font-medium mb-2 text-[#A0A0A0]">
           Record Type
         </label>
         <select
           id="type"
           value={type}
           onChange={(e) => setType(e.target.value as RecordType)}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
+          className="w-full px-4 py-3 border border-[#2A2A2A] rounded-xl bg-[#0F0F0F] text-white focus:border-[#8A63D2] focus:outline-none transition-colors"
           required
         >
           {RECORD_TYPES.map((rt) => (
-            <option key={rt} value={rt}>
+            <option key={rt} value={rt} className="bg-[#0F0F0F]">
               {rt}
             </option>
           ))}
@@ -55,7 +55,7 @@ export default function DNSRecordForm({
       </div>
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium mb-1">
+        <label htmlFor="name" className="block text-sm font-medium mb-2 text-[#A0A0A0]">
           Name
         </label>
         <input
@@ -64,16 +64,16 @@ export default function DNSRecordForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g., www, @, mail"
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
+          className="w-full px-4 py-3 border border-[#2A2A2A] rounded-xl bg-[#0F0F0F] text-white placeholder-[#A0A0A0] focus:border-[#8A63D2] focus:outline-none transition-colors"
           required
         />
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs text-[#A0A0A0] mt-2">
           Use @ for the root domain
         </p>
       </div>
 
       <div>
-        <label htmlFor="value" className="block text-sm font-medium mb-1">
+        <label htmlFor="value" className="block text-sm font-medium mb-2 text-[#A0A0A0]">
           Value
         </label>
         <input
@@ -82,23 +82,23 @@ export default function DNSRecordForm({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="e.g., 192.0.2.1 or example.com"
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
+          className="w-full px-4 py-3 border border-[#2A2A2A] rounded-xl bg-[#0F0F0F] text-white placeholder-[#A0A0A0] focus:border-[#8A63D2] focus:outline-none transition-colors"
           required
         />
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 pt-2">
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors"
+          className="flex-1 px-6 py-3 bg-[#1A1A1A] border border-[#2A2A2A] hover:border-[#8A63D2] text-white rounded-xl transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isPending || !name.trim() || !value.trim()}
-          className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50"
+          className="flex-1 px-6 py-3 gradient-purple hover:opacity-90 text-white rounded-xl transition-all disabled:opacity-50 font-medium"
         >
           {isPending ? 'Saving...' : 'Save Record'}
         </button>

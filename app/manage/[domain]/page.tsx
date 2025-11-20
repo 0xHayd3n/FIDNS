@@ -68,11 +68,11 @@ export default function ManageDomainPage() {
 
   if (!isConnected) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen bg-[#0F0F0F]">
         <Header />
-        <div className="max-w-4xl mx-auto mt-12">
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-            <p className="text-yellow-800 dark:text-yellow-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-6">
+            <p className="text-[#A0A0A0]">
               Please connect your wallet to manage DNS records.
             </p>
           </div>
@@ -83,11 +83,11 @@ export default function ManageDomainPage() {
 
   if (!isBaseNetwork) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen bg-[#0F0F0F]">
         <Header />
-        <div className="max-w-4xl mx-auto mt-12">
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-            <p className="text-yellow-800 dark:text-yellow-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-[#1A1A1A] border border-[#F59E0B]/20 rounded-2xl p-6">
+            <p className="text-[#F59E0B]">
               Please switch to Base network to manage DNS records.
             </p>
           </div>
@@ -98,11 +98,11 @@ export default function ManageDomainPage() {
 
   if (!user || !tokenId) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen bg-[#0F0F0F]">
         <Header />
-        <div className="max-w-4xl mx-auto mt-12">
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-            <p className="text-red-800 dark:text-red-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-[#1A1A1A] border border-[#EF4444]/30 rounded-2xl p-6">
+            <p className="text-[#EF4444]">
               Domain not found or you don't have permission to manage this domain.
             </p>
           </div>
@@ -112,35 +112,38 @@ export default function ManageDomainPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen bg-[#0F0F0F]">
       <Header />
       
-      <div className="max-w-4xl mx-auto mt-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-6">
-          <Link href="/" className="text-blue-600 hover:text-blue-700 dark:text-blue-400">
-            ← Back to Home
+          <Link href="/" className="text-[#A0A0A0] hover:text-[#8A63D2] transition-colors inline-flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Home
           </Link>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-          <h1 className="text-3xl font-bold mb-2">Manage DNS Records</h1>
-          <p className="text-gray-600 dark:text-gray-400">Domain: <strong>{domain}</strong></p>
-          <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Token ID: {Number(tokenId)}</p>
+        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8 mb-6">
+          <h1 className="text-3xl font-bold mb-2 gradient-purple-text">Manage DNS Records</h1>
+          <p className="text-[#A0A0A0] mb-1">Domain: <strong className="text-white">{domain}</strong></p>
+          <p className="text-sm text-[#A0A0A0]">Token ID: {Number(tokenId)}</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
-            <p className="text-red-800 dark:text-red-200">
+          <div className="bg-[#1A1A1A] border border-[#EF4444]/30 rounded-2xl p-4 mb-6">
+            <p className="text-[#EF4444]">
               {error.message || 'An error occurred'}
             </p>
           </div>
         )}
 
         {isConfirmed && (
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6">
-            <p className="text-green-800 dark:text-green-200">
+          <div className="bg-[#1A1A1A] border border-[#10B981]/30 rounded-2xl p-4 mb-6">
+            <p className="text-[#10B981]">
               Transaction confirmed! {hash && (
-                <a href={`https://basescan.org/tx/${hash}`} target="_blank" rel="noopener noreferrer" className="underline">
+                <a href={`https://sepolia.basescan.org/tx/${hash}`} target="_blank" rel="noopener noreferrer" className="text-[#8A63D2] hover:text-[#A78BEA] underline">
                   View on BaseScan
                 </a>
               )}
@@ -148,16 +151,16 @@ export default function ManageDomainPage() {
           </div>
         )}
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">DNS Records</h2>
+        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-white">DNS Records</h2>
             {!showForm && (
               <button
                 onClick={() => {
                   setEditingRecord(null)
                   setShowForm(true)
                 }}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-6 py-3 gradient-purple hover:opacity-90 text-white rounded-xl transition-all font-medium"
               >
                 Add Record
               </button>
@@ -181,7 +184,7 @@ export default function ManageDomainPage() {
           ) : null}
 
           {recordsLoading ? (
-            <div className="text-center py-8">Loading records...</div>
+            <div className="text-center py-8 text-[#A0A0A0]">Loading records...</div>
           ) : (
             <DNSRecordList
               records={records}

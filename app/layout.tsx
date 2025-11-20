@@ -3,8 +3,8 @@ import './globals.css'
 import { Providers } from './providers'
 
 export const metadata: Metadata = {
-  title: 'FIDNS - .FID Domain Manager',
-  description: 'Decentralized DNS manager for Farcaster .FID domains',
+  title: 'FIDNS - Decentralized DNS Manager',
+  description: 'Decentralized DNS manager tied to your Farcaster account. Own and manage your domains on-chain.',
 }
 
 export default function RootLayout({
@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className="dark">
+      <body className="bg-[#0F0F0F] text-white">
         <Providers>{children}</Providers>
       </body>
     </html>

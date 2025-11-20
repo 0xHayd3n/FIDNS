@@ -8,13 +8,13 @@ export default function WalletConnect() {
 
   if (isConnected && address) {
     return (
-      <div className="flex items-center gap-4">
-        <div className="text-sm">
-          <div className="font-medium">{shortenAddress(address)}</div>
+      <div className="flex items-center gap-3">
+        <div className="text-right">
+          <div className="text-sm font-medium text-white">{shortenAddress(address)}</div>
           {!isBaseNetwork && (
             <button
               onClick={switchToBase}
-              className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
+              className="text-xs text-[#F59E0B] hover:text-[#F59E0B]/80"
             >
               Switch to Base
             </button>
@@ -22,7 +22,7 @@ export default function WalletConnect() {
         </div>
         <button
           onClick={() => disconnect()}
-          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors"
+          className="px-4 py-2 bg-[#1A1A1A] border border-[#2A2A2A] hover:border-[#8A63D2] text-white rounded-lg transition-colors text-sm"
         >
           Disconnect
         </button>
@@ -37,7 +37,7 @@ export default function WalletConnect() {
           key={connector.id}
           onClick={() => connect({ connector })}
           disabled={isConnecting}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50"
+          className="px-4 py-2 gradient-purple hover:opacity-90 text-white rounded-lg transition-all disabled:opacity-50 text-sm font-medium"
         >
           {isConnecting ? 'Connecting...' : `Connect ${connector.name}`}
         </button>
