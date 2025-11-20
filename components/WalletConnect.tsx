@@ -5,7 +5,7 @@ import { useFarcasterUser } from '@/hooks/useFarcasterUser'
 import { shortenAddress } from '@/lib/ethereum'
 
 export default function WalletConnect() {
-  const { address, isConnected, isConnecting, connect, disconnect, connectors, switchToBase, isBaseNetwork } = useWallet()
+  const { address, isConnected, isConnecting, disconnect, switchToBase, isBaseNetwork } = useWallet()
   const { user, loading: userLoading } = useFarcasterUser()
 
   if (isConnected && address) {
@@ -49,18 +49,12 @@ export default function WalletConnect() {
     )
   }
 
-  // Manual connect button - no auto-connect
-  const farcasterConnector = connectors.find(c => c.id === 'injected' || c.type === 'injected')
-  
-  if (farcasterConnector && !isConnected) {
+  // Auto-connecting state - wallet will connect automatically
+  if (!isConnected) {
     return (
-      <button
-        onClick={() => connect({ connector: farcasterConnector })}
-        disabled={isConnecting}
-        className="px-4 py-2 gradient-purple hover:opacity-90 text-white rounded-lg transition-all disabled:opacity-50 text-sm font-medium"
-      >
-        {isConnecting ? 'Connecting...' : 'Connect Farcaster Wallet'}
-      </button>
+      <div className="px-4 py-2 text-sm text-[#A0A0A0]">
+        {isConnecting ? 'Connecting...' : 'Connecting wallet...'}
+      </div>
     )
   }
 

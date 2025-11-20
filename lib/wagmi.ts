@@ -1,12 +1,12 @@
 import { base, baseSepolia } from 'wagmi/chains'
 import { createConfig, http } from 'wagmi'
-import { injected } from 'wagmi/connectors'
+import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector'
 
-// Only allow Farcaster embedded wallet (injected via Farcaster client)
+// Use Farcaster's official miniapp connector for automatic wallet connection
 export const config = createConfig({
   chains: [base, baseSepolia],
   connectors: [
-    injected(), // This will use Farcaster's embedded wallet when in Farcaster client
+    farcasterMiniApp(), // Farcaster's embedded wallet connector
   ],
   transports: {
     [base.id]: http(),
