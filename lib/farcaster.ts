@@ -13,7 +13,26 @@ export interface FarcasterUser {
 declare global {
   interface Window {
     farcaster?: {
-      ready?: () => Promise<void>
+      actions?: {
+        ready?: () => Promise<void>
+      }
+      context?: {
+        user?: {
+          fid: number
+          username?: string
+          displayName?: string
+          pfp?: {
+            url: string
+          }
+          custodyAddress?: string
+          verifications?: string[]
+        }
+      }
+    }
+    sdk?: {
+      actions?: {
+        ready?: () => Promise<void>
+      }
       context?: {
         user?: {
           fid: number
@@ -38,9 +57,33 @@ let farcasterUser: FarcasterUser | null = null
  */
 export async function initializeFarcaster() {
   try {
-    if (typeof window !== 'undefined' && window.farcaster) {
-      await window.farcaster.ready?.()
-      console.log('Farcaster SDK initialized')
+    if (typeof window !== 'undefined') {
+      // Try different possible SDK structures
+      const sdk = (window as any).farcaster || (window as any).sdk
+      
+      if (sdk) {
+        // Try sdk.actions.ready() first (standard structure)
+        if (sdk.actions?.ready) {
+          await sdk.actions.ready()
+          console.log('Farcaster SDK initialized - ready() called via actions.ready()')
+          return
+        }
+        // Try sdk.ready() as fallback
+        if (typeof sdk.ready === 'function') {
+          await sdk.ready()
+          console.log('Farcaster SDK initialized - ready() called via ready()')
+          return
+        }
+        // Try window.farcaster.ready() as another fallback
+        if ((window as any).farcaster?.ready) {
+          await (window as any).farcaster.ready()
+          console.log('Farcaster SDK initialized - ready() called via farcaster.ready()')
+          return
+        }
+        console.warn('Farcaster SDK found but ready() method not available')
+      } else {
+        console.warn('Farcaster SDK not available - not running in Farcaster client')
+      }
     }
   } catch (error) {
     console.error('Failed to initialize Farcaster SDK:', error)
@@ -52,8 +95,11 @@ export async function initializeFarcaster() {
  */
 export async function getFarcasterUser(): Promise<FarcasterUser | null> {
   try {
-    if (typeof window !== 'undefined' && window.farcaster) {
-      const context = window.farcaster.context
+    if (typeof window !== 'undefined') {
+      // Try both window.farcaster and window.sdk
+      const sdk = window.farcaster || window.sdk
+      const context = sdk?.context
+      
       if (context?.user) {
         farcasterUser = {
           fid: context.user.fid,
