@@ -95,23 +95,70 @@ export async function initializeFarcaster() {
  */
 export async function getFarcasterUser(): Promise<FarcasterUser | null> {
   try {
-    if (typeof window !== 'undefined') {
-      // Try both window.farcaster and window.sdk
-      const sdk = window.farcaster || window.sdk
-      const context = sdk?.context
-      
-      if (context?.user) {
-        farcasterUser = {
-          fid: context.user.fid,
-          username: context.user.username,
-          displayName: context.user.displayName,
-          pfp: context.user.pfp,
-          custodyAddress: context.user.custodyAddress,
-          verifications: context.user.verifications,
-        }
-        return farcasterUser
-      }
+    if (typeof window === 'undefined') {
+      return null
     }
+
+    // Try multiple ways to access Farcaster context
+    const win = window as any
+    
+    // Method 1: window.farcaster.context.user
+    if (win.farcaster?.context?.user) {
+      const user = win.farcaster.context.user
+      farcasterUser = {
+        fid: user.fid,
+        username: user.username,
+        displayName: user.displayName,
+        pfp: user.pfp,
+        custodyAddress: user.custodyAddress,
+        verifications: user.verifications,
+      }
+      console.log('Farcaster user loaded from window.farcaster.context')
+      return farcasterUser
+    }
+    
+    // Method 2: window.sdk.context.user
+    if (win.sdk?.context?.user) {
+      const user = win.sdk.context.user
+      farcasterUser = {
+        fid: user.fid,
+        username: user.username,
+        displayName: user.displayName,
+        pfp: user.pfp,
+        custodyAddress: user.custodyAddress,
+        verifications: user.verifications,
+      }
+      console.log('Farcaster user loaded from window.sdk.context')
+      return farcasterUser
+    }
+    
+    // Method 3: window.farcasterContext.user
+    if (win.farcasterContext?.user) {
+      const user = win.farcasterContext.user
+      farcasterUser = {
+        fid: user.fid,
+        username: user.username,
+        displayName: user.displayName,
+        pfp: user.pfp,
+        custodyAddress: user.custodyAddress,
+        verifications: user.verifications,
+      }
+      console.log('Farcaster user loaded from window.farcasterContext')
+      return farcasterUser
+    }
+    
+    // Debug: Log what's available
+    if (win.farcaster || win.sdk) {
+      console.log('Farcaster SDK detected but no user context found:', {
+        hasFarcaster: !!win.farcaster,
+        hasSdk: !!win.sdk,
+        farcasterKeys: win.farcaster ? Object.keys(win.farcaster) : [],
+        sdkKeys: win.sdk ? Object.keys(win.sdk) : [],
+      })
+    } else {
+      console.log('Farcaster SDK not detected - not running in Farcaster client')
+    }
+    
     return null
   } catch (error) {
     console.error('Failed to get Farcaster user:', error)

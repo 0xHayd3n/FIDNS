@@ -13,15 +13,49 @@ export function useWallet() {
   const chainId = useChainId()
   const { switchChain } = useSwitchChain()
 
-  // Auto-connect using Farcaster's custody address
+  // Auto-connect using Farcaster's embedded wallet
   useEffect(() => {
-    if (user?.custodyAddress && !account.isConnected && connectors.length > 0) {
-      const farcasterConnector = connectors.find(c => c.id === 'injected' || c.type === 'injected')
-      if (farcasterConnector) {
-        connect({ connector: farcasterConnector })
+    const attemptConnect = async () => {
+      // Don't try to connect if already connected
+      if (account.isConnected || isConnecting) {
+        return
+      }
+
+      // Check if we're in a Farcaster environment
+      const hasInjectedProvider = typeof window !== 'undefined' && 
+        (typeof (window as any).ethereum !== 'undefined' || 
+         typeof (window as any).farcaster !== 'undefined')
+      
+      // If we have connectors and we're in Farcaster environment, try to connect
+      if (hasInjectedProvider && connectors.length > 0) {
+        const farcasterConnector = connectors.find(c => c.id === 'injected' || c.type === 'injected')
+        if (farcasterConnector) {
+          try {
+            console.log('Attempting to auto-connect Farcaster wallet...')
+            await connect({ connector: farcasterConnector })
+            console.log('Farcaster wallet connected successfully')
+          } catch (error) {
+            // Silently fail - might not be ready yet
+            console.debug('Auto-connect attempt failed:', error)
+          }
+        }
       }
     }
-  }, [user?.custodyAddress, account.isConnected, connectors, connect])
+
+    // Try immediately if connectors are ready
+    if (connectors.length > 0) {
+      attemptConnect()
+    }
+    
+    // Retry with increasing delays to handle async loading
+    const timeouts = [
+      setTimeout(() => connectors.length > 0 && attemptConnect(), 300),
+      setTimeout(() => connectors.length > 0 && attemptConnect(), 1000),
+      setTimeout(() => connectors.length > 0 && attemptConnect(), 2000),
+    ]
+    
+    return () => timeouts.forEach(clearTimeout)
+  }, [account.isConnected, isConnecting, connectors, connect])
 
   // Use Farcaster custody address if available, otherwise use connected wallet
   const address = user?.custodyAddress || account.address
