@@ -1,10 +1,12 @@
 'use client'
 
 import { useWallet } from '@/hooks/useWallet'
+import { useFarcasterUser } from '@/hooks/useFarcasterUser'
 import { shortenAddress } from '@/lib/ethereum'
 
 export default function WalletConnect() {
   const { address, isConnected, isConnecting, connect, disconnect, connectors, switchToBase, isBaseNetwork } = useWallet()
+  const { user, loading: userLoading } = useFarcasterUser()
 
   if (isConnected && address) {
     return (
@@ -30,18 +32,41 @@ export default function WalletConnect() {
     )
   }
 
+  // Only show Farcaster wallet connection
+  if (userLoading) {
+    return (
+      <div className="px-4 py-2 text-sm text-[#A0A0A0]">
+        Loading...
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="px-4 py-2 text-sm text-[#A0A0A0]">
+        Farcaster required
+      </div>
+    )
+  }
+
+  // Auto-connect if Farcaster wallet is available
+  const farcasterConnector = connectors.find(c => c.id === 'injected' || c.type === 'injected')
+  
+  if (farcasterConnector && !isConnected) {
+    return (
+      <button
+        onClick={() => connect({ connector: farcasterConnector })}
+        disabled={isConnecting}
+        className="px-4 py-2 gradient-purple hover:opacity-90 text-white rounded-lg transition-all disabled:opacity-50 text-sm font-medium"
+      >
+        {isConnecting ? 'Connecting...' : 'Connect Farcaster Wallet'}
+      </button>
+    )
+  }
+
   return (
-    <div className="flex gap-2">
-      {connectors.map((connector) => (
-        <button
-          key={connector.id}
-          onClick={() => connect({ connector })}
-          disabled={isConnecting}
-          className="px-4 py-2 gradient-purple hover:opacity-90 text-white rounded-lg transition-all disabled:opacity-50 text-sm font-medium"
-        >
-          {isConnecting ? 'Connecting...' : `Connect ${connector.name}`}
-        </button>
-      ))}
+    <div className="px-4 py-2 text-sm text-[#A0A0A0]">
+      Farcaster wallet not available
     </div>
   )
 }

@@ -16,7 +16,12 @@ export default function Header() {
               <span className="text-white font-bold text-lg">F</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold gradient-purple-text">FIDNS</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold gradient-purple-text">FIDNS</h1>
+                <span className="px-2 py-0.5 bg-[#8A63D2]/20 border border-[#8A63D2]/30 rounded text-xs text-[#8A63D2] font-medium">
+                  Farcaster
+                </span>
+              </div>
               <p className="text-xs text-[#A0A0A0]">DNS Manager</p>
             </div>
           </Link>

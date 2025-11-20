@@ -1,15 +1,12 @@
 import { base, baseSepolia } from 'wagmi/chains'
 import { createConfig, http } from 'wagmi'
-import { injected, walletConnect, coinbaseWallet } from 'wagmi/connectors'
+import { injected } from 'wagmi/connectors'
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || ''
-
+// Only allow Farcaster embedded wallet (injected via Farcaster client)
 export const config = createConfig({
   chains: [base, baseSepolia],
   connectors: [
-    injected(),
-    ...(projectId ? [walletConnect({ projectId })] : []),
-    coinbaseWallet({ appName: 'FIDNS' }),
+    injected(), // This will use Farcaster's embedded wallet when in Farcaster client
   ],
   transports: {
     [base.id]: http(),

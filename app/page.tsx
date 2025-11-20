@@ -40,7 +40,24 @@ export default function Home() {
           </p>
         </div>
 
-        {!isConnected ? (
+        {!user ? (
+          <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8 mb-8 text-center">
+            <div className="max-w-md mx-auto">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full gradient-purple flex items-center justify-center">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-white">Farcaster Required</h3>
+              <p className="text-[#A0A0A0] mb-4">
+                This app requires Farcaster to access your account and wallet.
+              </p>
+              <p className="text-sm text-[#A0A0A0]">
+                Please open this app from within Warpcast or another Farcaster client.
+              </p>
+            </div>
+          </div>
+        ) : !isConnected ? (
           <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8 mb-8 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full gradient-purple flex items-center justify-center">
@@ -48,9 +65,9 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Connect Your Wallet</h3>
+              <h3 className="text-xl font-semibold mb-2 text-white">Connect Farcaster Wallet</h3>
               <p className="text-[#A0A0A0]">
-                Connect your wallet to start managing your decentralized DNS
+                Your Farcaster wallet will be used to manage your domains on-chain.
               </p>
             </div>
           </div>
@@ -75,7 +92,7 @@ export default function Home() {
                       <p><span className="text-white font-medium">Username:</span> {user.username}</p>
                     )}
                     {address && (
-                      <p className="text-sm font-mono"><span className="text-white font-medium">Wallet:</span> {address.slice(0, 6)}...{address.slice(-4)}</p>
+                      <p className="text-sm font-mono"><span className="text-white font-medium">Farcaster Wallet:</span> {address.slice(0, 6)}...{address.slice(-4)}</p>
                     )}
                   </div>
                 </div>
