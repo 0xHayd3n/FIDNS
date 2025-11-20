@@ -23,10 +23,12 @@ export function useWallet() {
       
       if (farcasterConnector) {
         hasAttemptedConnect.current = true
-        connect({ connector: farcasterConnector }).catch((error) => {
+        try {
+          connect({ connector: farcasterConnector })
+        } catch (error) {
           console.error('Failed to auto-connect wallet:', error)
           hasAttemptedConnect.current = false // Reset on error to allow retry
-        })
+        }
       }
     }
   }, [user, account.isConnected, isConnecting, connectors, connect])
