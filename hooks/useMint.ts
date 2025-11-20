@@ -14,7 +14,9 @@ export function useMint(fid: number | null) {
     abi: FID_REGISTRY_ABI,
     functionName: 'isFIDMinted',
     args: fid ? [BigInt(fid)] : undefined,
-    enabled: !!fid,
+    query: {
+      enabled: !!fid,
+    },
   })
 
   // Check if user already owns the domain
@@ -23,7 +25,9 @@ export function useMint(fid: number | null) {
     abi: FID_REGISTRY_ABI,
     functionName: 'getTokenIdByFID',
     args: fid ? [BigInt(fid)] : undefined,
-    enabled: !!fid,
+    query: {
+      enabled: !!fid,
+    },
   })
 
   const { writeContract, data: hash, isPending, error: writeError } = useWriteContract()

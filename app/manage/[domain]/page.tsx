@@ -27,7 +27,9 @@ export default function ManageDomainPage() {
     abi: FID_REGISTRY_ABI,
     functionName: 'getTokenIdByFID',
     args: user?.fid ? [BigInt(user.fid)] : undefined,
-    enabled: !!user?.fid,
+    query: {
+      enabled: !!user?.fid,
+    },
   })
 
   const {
