@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
             abi: TLD_REGISTRY_ABI,
             functionName: 'getOwnerDomains',
             args: [owner as `0x${string}`],
-          })
+          }) as string[]
 
           for (const domain of domains) {
             try {
