@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { DOMAIN_FRACTIONALIZATION_ADDRESS, DOMAIN_FRACTIONALIZATION_ABI } from '@/lib/contracts'
 import { parseEther } from 'viem'
@@ -41,17 +41,22 @@ export default function FractionalizationToggle({ domain, isEnabled, onToggle }:
     try {
       const priceInWei = parseEther(tokenPrice)
 
-    writeContract({
-      address: DOMAIN_FRACTIONALIZATION_ADDRESS,
-      abi: DOMAIN_FRACTIONALIZATION_ABI,
-      functionName: 'enableFractionalization',
-      args: [domain, priceInWei],
-    })
+      writeContract({
+        address: DOMAIN_FRACTIONALIZATION_ADDRESS,
+        abi: DOMAIN_FRACTIONALIZATION_ABI,
+        functionName: 'enableFractionalization',
+        args: [domain, priceInWei],
+      })
+    } catch (err) {
+      setValidationError(err instanceof Error ? err.message : 'Failed to enable fractionalization')
+    }
   }
 
-  if (isConfirmed && onToggle) {
-    onToggle()
-  }
+  useEffect(() => {
+    if (isConfirmed && onToggle) {
+      onToggle()
+    }
+  }, [isConfirmed, onToggle])
 
   if (isEnabled) {
     return (
