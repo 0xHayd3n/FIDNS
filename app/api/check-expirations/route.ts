@@ -3,6 +3,7 @@ import { createPublicClient, http, isAddress } from 'viem'
 import { baseSepolia } from 'viem/chains'
 import { TLD_REGISTRY_ABI } from '@/lib/contracts'
 import { validateCSRFRequest } from '@/lib/csrf'
+import { verifyRequestOwnership } from '@/lib/api-auth'
 
 /**
  * API route to check domain expirations and send email notifications
