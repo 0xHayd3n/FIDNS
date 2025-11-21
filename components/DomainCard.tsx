@@ -1,58 +1,93 @@
 'use client'
 
 import Link from 'next/link'
-import { formatDomainName } from '@/lib/farcaster'
+import { formatDate, formatDaysUntilExpiration, daysUntilExpiration } from '@/lib/date-utils'
 
 interface DomainCardProps {
-  fid: number
-  username?: string
-  tokenId?: number
-  isMinted: boolean
+  domain: string
+  type: 'fid' | 'tld'
+  registrationDate?: number
+  expirationDate?: number
+  daysUntilExpiration?: number
+  isExpired?: boolean
 }
 
-export default function DomainCard({ fid, username, tokenId, isMinted }: DomainCardProps) {
-  const domainName = formatDomainName(fid, username)
+export default function DomainCard({ 
+  domain, 
+  type, 
+  registrationDate, 
+  expirationDate, 
+  daysUntilExpiration,
+  isExpired 
+}: DomainCardProps) {
+  const isFID = type === 'fid'
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+    <div className={`bg-[#1A1A1A] border rounded-2xl p-6 ${
+      isExpired || (daysUntilExpiration && daysUntilExpiration <= 15)
+        ? 'border-[#EF4444]/50'
+        : isFID
+        ? 'border-[#8A63D2]/50'
+        : 'border-[#2A2A2A]'
+    }`}>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-xl font-semibold mb-1">{domainName}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">FID: {fid}</p>
-          {username && (
-            <p className="text-sm text-gray-600 dark:text-gray-400">Username: {username}</p>
-          )}
+          <h3 className="text-xl font-bold text-white mb-1">{domain}</h3>
+          <div className="flex items-center gap-2">
+            {isFID ? (
+              <span className="px-2 py-1 bg-[#8A63D2]/20 border border-[#8A63D2]/50 rounded text-xs text-[#8A63D2] font-medium">
+                Master Domain
+              </span>
+            ) : (
+              <span className="px-2 py-1 bg-[#2A2A2A] border border-[#3A3A3A] rounded text-xs text-[#A0A0A0] font-medium">
+                TLD Domain
+              </span>
+            )}
+            {isFID && (
+              <span className="px-2 py-1 bg-[#10B981]/20 border border-[#10B981]/50 rounded text-xs text-[#10B981] font-medium">
+                Free Forever
+              </span>
+            )}
+          </div>
         </div>
-        <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-          isMinted
-            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
-        }`}>
-          {isMinted ? 'Minted' : 'Not Minted'}
-        </div>
-      </div>
-
-      {tokenId && (
-        <p className="text-sm text-gray-500 dark:text-gray-500 mb-4">Token ID: {tokenId}</p>
-      )}
-
-      <div className="flex gap-2">
-        {isMinted ? (
-          <Link
-            href={`/manage/${domainName}`}
-            className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-center transition-colors"
-          >
-            Manage DNS
-          </Link>
-        ) : (
-          <Link
-            href="/mint"
-            className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-center transition-colors"
-          >
-            Mint Domain
-          </Link>
+        {(isExpired || (daysUntilExpiration && daysUntilExpiration <= 15)) && !isFID && (
+          <div className="px-3 py-1 bg-[#EF4444]/20 border border-[#EF4444]/50 rounded-lg">
+            <span className="text-[#EF4444] font-medium text-xs">
+              {isExpired ? 'Expired' : `${daysUntilExpiration} days left`}
+            </span>
+          </div>
         )}
       </div>
+
+      {expirationDate && !isFID && (
+        <div className="space-y-2 mb-4 text-sm">
+          <div className="flex justify-between">
+            <span className="text-[#A0A0A0]">Expires:</span>
+            <span className="text-white">{formatDate(expirationDate)}</span>
+          </div>
+          {registrationDate && (
+            <div className="flex justify-between">
+              <span className="text-[#A0A0A0]">Registered:</span>
+              <span className="text-white">{formatDate(registrationDate)}</span>
+            </div>
+          )}
+          {expirationDate && (
+            <div className="flex justify-between pt-2 border-t border-[#2A2A2A]">
+              <span className="text-[#A0A0A0]">Status:</span>
+              <span className={isExpired ? 'text-[#EF4444]' : daysUntilExpiration(expirationDate) <= 15 ? 'text-[#F59E0B]' : 'text-[#10B981]'}>
+                {formatDaysUntilExpiration(daysUntilExpiration(expirationDate))}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      <Link
+        href={`/manage/${domain}`}
+        className="inline-block w-full text-center px-4 py-2 bg-[#2A2A2A] hover:bg-[#3A3A3A] text-white rounded-lg transition-colors"
+      >
+        Manage
+      </Link>
     </div>
   )
 }

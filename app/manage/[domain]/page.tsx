@@ -10,7 +10,12 @@ import { FID_REGISTRY_ADDRESS, FID_REGISTRY_ABI } from '@/lib/contracts'
 import Header from '@/components/Header'
 import DNSRecordList from '@/components/DNSRecordList'
 import DNSRecordForm from '@/components/DNSRecordForm'
+import FractionalizationToggle from '@/components/FractionalizationToggle'
+import DomainTreasury from '@/components/DomainTreasury'
+import TokenPurchase from '@/components/TokenPurchase'
 import { useDNSRecords, DNSRecord, RecordType } from '@/hooks/useDNSRecords'
+import { DOMAIN_FRACTIONALIZATION_ADDRESS, DOMAIN_FRACTIONALIZATION_ABI, TLD_REGISTRY_ADDRESS, TLD_REGISTRY_ABI } from '@/lib/contracts'
+import AuthGuard from '@/components/AuthGuard'
 import Link from 'next/link'
 
 export default function ManageDomainPage() {
@@ -43,6 +48,40 @@ export default function ManageDomainPage() {
     hash,
     error,
   } = useDNSRecords(tokenId ? Number(tokenId) : null)
+
+  // Check if domain is fractionalized
+  const isFIDDomain = domain.endsWith('.FID') || domain.endsWith('.fid')
+  const domainParts = isFIDDomain ? null : domain.split('.')
+  const domainName = isFIDDomain ? null : domainParts?.[0] || ''
+  const tld = isFIDDomain ? null : domainParts?.[1] || ''
+
+  const { data: fractionalizationInfo } = useReadContract({
+    address: DOMAIN_FRACTIONALIZATION_ADDRESS,
+    abi: DOMAIN_FRACTIONALIZATION_ABI,
+    functionName: 'fractionalizationInfo',
+    args: domain ? [domain] : undefined,
+    query: {
+      enabled: !!DOMAIN_FRACTIONALIZATION_ADDRESS && !!domain && !isFIDDomain,
+    },
+  })
+
+  const isFractionalized = fractionalizationInfo && (fractionalizationInfo as any)[3] // isEnabled field
+  const tokenPrice = fractionalizationInfo ? (fractionalizationInfo as any)[4] : 0n // publicTokenPrice field
+
+  // Fetch TLD domain info if it's a TLD domain
+  const { data: tldDomainInfo } = useReadContract({
+    address: TLD_REGISTRY_ADDRESS,
+    abi: TLD_REGISTRY_ABI,
+    functionName: 'domainInfo',
+    args: domain && !isFIDDomain ? [domain] : undefined,
+    query: {
+      enabled: !!TLD_REGISTRY_ADDRESS && !!domain && !isFIDDomain,
+    },
+  })
+
+  // Check if domain is expired
+  const isExpired = tldDomainInfo && 
+    Number((tldDomainInfo as any)[2]) * 1000 < Date.now()
 
   useEffect(() => {
     initializeFarcaster()
@@ -120,24 +159,131 @@ export default function ManageDomainPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F]">
-      <Header />
-      
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <AuthGuard>
+      <main className="min-h-screen bg-[#0F0F0F]">
+        <Header />
+        
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-6">
-          <Link href="/" className="text-[#A0A0A0] hover:text-[#8A63D2] transition-colors inline-flex items-center gap-2">
+          <Link href="/dashboard" className="text-[#A0A0A0] hover:text-[#8A63D2] transition-colors inline-flex items-center gap-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Home
+            Back to Dashboard
           </Link>
         </div>
 
+        {/* Domain Overview Dashboard */}
         <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8 mb-6">
-          <h1 className="text-3xl font-bold mb-2 gradient-purple-text">Manage DNS Records</h1>
-          <p className="text-[#A0A0A0] mb-1">Domain: <strong className="text-white">{domain}</strong></p>
-          <p className="text-sm text-[#A0A0A0]">Token ID: {Number(tokenId)}</p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2 gradient-purple-text">{domain}</h1>
+              <div className="flex items-center gap-3">
+                {domain.endsWith('.FID') || domain.endsWith('.fid') ? (
+                  <span className="px-3 py-1 bg-[#8A63D2]/20 border border-[#8A63D2]/50 rounded-lg text-[#8A63D2] text-sm font-medium">
+                    Master Domain
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg text-[#A0A0A0] text-sm font-medium">
+                    TLD Domain
+                  </span>
+                )}
+                {domain.endsWith('.FID') || domain.endsWith('.fid') ? (
+                  <span className="px-3 py-1 bg-[#10B981]/20 border border-[#10B981]/50 rounded-lg text-[#10B981] text-sm font-medium">
+                    Free Forever
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p className="text-sm text-[#A0A0A0] mb-1">Domain Type</p>
+              <p className="text-white font-medium">
+                {domain.endsWith('.FID') || domain.endsWith('.fid') ? '.FID Domain' : 'TLD Domain'}
+              </p>
+            </div>
+            {tokenId && (
+              <div>
+                <p className="text-sm text-[#A0A0A0] mb-1">Token ID</p>
+                <p className="text-white font-medium">{Number(tokenId)}</p>
+              </div>
+            )}
+            {!(domain.endsWith('.FID') || domain.endsWith('.fid')) && (
+              <>
+                {tldDomainInfo && (
+                  <>
+                    <div>
+                      <p className="text-sm text-[#A0A0A0] mb-1">Registration Date</p>
+                      <p className="text-white font-medium">
+                        {new Date(Number((tldDomainInfo as any)[1]) * 1000).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#A0A0A0] mb-1">Expiration Date</p>
+                      <p className="text-white font-medium">
+                        {new Date(Number((tldDomainInfo as any)[2]) * 1000).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#A0A0A0] mb-1">Years Purchased</p>
+                      <p className="text-white font-medium">
+                        {Number((tldDomainInfo as any)[3])} {Number((tldDomainInfo as any)[3]) === 1 ? 'year' : 'years'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#A0A0A0] mb-1">Status</p>
+                      <p className={`font-medium ${
+                        Number((tldDomainInfo as any)[2]) * 1000 < Date.now()
+                          ? 'text-[#EF4444]'
+                          : Number((tldDomainInfo as any)[2]) * 1000 < Date.now() + 15 * 24 * 60 * 60 * 1000
+                          ? 'text-[#F59E0B]'
+                          : 'text-[#10B981]'
+                      }`}>
+                        {Number((tldDomainInfo as any)[2]) * 1000 < Date.now()
+                          ? 'Expired'
+                          : Number((tldDomainInfo as any)[2]) * 1000 < Date.now() + 15 * 24 * 60 * 60 * 1000
+                          ? 'Expiring Soon'
+                          : 'Active'}
+                      </p>
+                    </div>
+                  </>
+                )}
+                <div>
+                  <p className="text-sm text-[#A0A0A0] mb-1">Renewal</p>
+                  <Link
+                    href={`/tld/register?domain=${domain.split('.')[0]}&tld=${domain.split('.')[1]}`}
+                    className="inline-block px-4 py-2 bg-[#8A63D2] hover:bg-[#7A53C2] text-white rounded-lg transition-colors text-sm font-medium"
+                  >
+                    Renew Domain
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
         </div>
+
+        {/* Fractionalization Section (TLD domains only) */}
+        {!isFIDDomain && domainName && tld && (
+          <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8 mb-6">
+            <h2 className="text-2xl font-semibold mb-4 text-white">Fractionalization</h2>
+            <FractionalizationToggle domain={domain} isEnabled={isFractionalized as boolean} />
+            
+            {isFractionalized && (
+              <div className="mt-6">
+                <TokenPurchase domain={domain} tokenPrice={tokenPrice as bigint} />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Treasury Section (TLD domains only) */}
+        {!isFIDDomain && domainName && tld && (
+          <div className="mb-6">
+            <DomainTreasury domain={domainName} tld={tld} />
+          </div>
+        )}
 
         {error && (
           <div className="bg-[#1A1A1A] border border-[#EF4444]/30 rounded-2xl p-4 mb-6">
@@ -159,10 +305,18 @@ export default function ManageDomainPage() {
           </div>
         )}
 
+        {!isFIDDomain && isExpired && (
+          <div className="bg-[#1A1A1A] border border-[#EF4444]/30 rounded-2xl p-6 mb-6">
+            <p className="text-[#EF4444]">
+              This domain has expired. Please renew it before managing DNS records.
+            </p>
+          </div>
+        )}
+
         <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-8 mb-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-semibold text-white">DNS Records</h2>
-            {!showForm && (
+            {!showForm && !isExpired && (
               <button
                 onClick={() => {
                   setEditingRecord(null)
@@ -175,7 +329,7 @@ export default function ManageDomainPage() {
             )}
           </div>
 
-          {showForm ? (
+          {showForm && !isExpired ? (
             <div className="mb-6">
               <DNSRecordForm
                 onSubmit={handleSubmit}
@@ -204,6 +358,7 @@ export default function ManageDomainPage() {
         </div>
       </div>
     </main>
+    </AuthGuard>
   )
 }
 

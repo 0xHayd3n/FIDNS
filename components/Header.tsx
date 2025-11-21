@@ -26,6 +26,19 @@ export default function Header() {
             </div>
           </Link>
           
+          <nav className="flex items-center gap-6">
+            {isConnected && (
+              <>
+                <Link href="/dashboard" className="text-[#A0A0A0] hover:text-white transition-colors text-sm font-medium">
+                  Dashboard
+                </Link>
+                <Link href="/tld/register" className="text-[#A0A0A0] hover:text-white transition-colors text-sm font-medium">
+                  Register TLD
+                </Link>
+              </>
+            )}
+          </nav>
+          
           <div className="flex items-center gap-4">
             {isConnected && !isBaseNetwork && (
               <div className="text-sm text-[#F59E0B] bg-[#F59E0B]/10 px-3 py-1.5 rounded-lg border border-[#F59E0B]/20">

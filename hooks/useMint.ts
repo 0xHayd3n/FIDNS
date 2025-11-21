@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
-import { FID_REGISTRY_ADDRESS, FID_REGISTRY_ABI, MINT_PRICE } from '@/lib/contracts'
-import { parseEther } from 'viem'
+import { FID_REGISTRY_ADDRESS, FID_REGISTRY_ABI } from '@/lib/contracts'
+import { isValidAddress } from '@/lib/ethereum'
 
 export function useMint(fid: number | null) {
   const [error, setError] = useState<Error | null>(null)
@@ -37,8 +37,21 @@ export function useMint(fid: number | null) {
   })
 
   const mint = async (walletAddress: string) => {
-    if (!fid) {
-      setError(new Error('FID is required'))
+    // Validate contract address
+    if (!FID_REGISTRY_ADDRESS) {
+      setError(new Error('FID Registry contract address not configured'))
+      return
+    }
+
+    // Validate FID parameter
+    if (!fid || fid <= 0 || fid > Number.MAX_SAFE_INTEGER) {
+      setError(new Error('Invalid FID. Must be a positive integer within safe range.'))
+      return
+    }
+
+    // Validate wallet address
+    if (!isValidAddress(walletAddress)) {
+      setError(new Error('Invalid wallet address format'))
       return
     }
 
@@ -55,7 +68,7 @@ export function useMint(fid: number | null) {
         abi: FID_REGISTRY_ABI,
         functionName: 'mintFID',
         args: [BigInt(fid), walletAddress as `0x${string}`],
-        value: MINT_PRICE,
+        value: BigInt(0), // Free forever, gas only
       })
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to mint'))

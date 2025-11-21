@@ -3,6 +3,7 @@ import Script from 'next/script'
 import './globals.css'
 import { Providers } from './providers'
 import { FarcasterInit } from './farcaster-init'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 export const metadata: Metadata = {
   title: 'FIDNS - Decentralized DNS Manager',
@@ -46,7 +47,11 @@ export default function RootLayout({
           }}
         />
         <FarcasterInit />
-        <Providers>{children}</Providers>
+        <Providers>
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </Providers>
       </body>
     </html>
   )

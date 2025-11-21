@@ -5,13 +5,14 @@ import { useMint } from '@/hooks/useMint'
 import { useWallet } from '@/hooks/useWallet'
 import { useFarcasterUser } from '@/hooks/useFarcasterUser'
 import { formatDomainName, hasENSName } from '@/lib/farcaster'
-import { formatEth } from '@/lib/ethereum'
-import { MINT_PRICE } from '@/lib/contracts'
 
 export default function MintForm() {
   const { user } = useFarcasterUser()
   const { address, isConnected, isBaseNetwork } = useWallet()
-  const { mint, isMinted, tokenId, isPending, isConfirming, isConfirmed, hash, error, checkingMint } = useMint(user?.fid || null)
+  
+  // Validate FID before passing to useMint
+  const validFid = user?.fid && user.fid > 0 ? user.fid : null
+  const { mint, isMinted, tokenId, isPending, isConfirming, isConfirmed, hash, error, checkingMint } = useMint(validFid)
 
   const [showConfirm, setShowConfirm] = useState(false)
 
@@ -20,6 +21,17 @@ export default function MintForm() {
       <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-6">
         <p className="text-[#A0A0A0]">
           Unable to load Farcaster user data.
+        </p>
+      </div>
+    )
+  }
+
+  // Validate FID
+  if (!user.fid || user.fid <= 0) {
+    return (
+      <div className="bg-[#1A1A1A] border border-[#EF4444]/30 rounded-2xl p-6">
+        <p className="text-[#EF4444]">
+          Invalid Farcaster ID. Please ensure you have a valid Farcaster account.
         </p>
       </div>
     )
@@ -150,9 +162,10 @@ export default function MintForm() {
           <p className="text-3xl font-bold gradient-purple-text">{domainName}</p>
         </div>
 
-        <div className="bg-[#0F0F0F] rounded-xl p-4 border border-[#2A2A2A]">
+        <div className="bg-[#10B981]/10 border border-[#10B981]/30 rounded-xl p-4">
           <p className="text-sm text-[#A0A0A0] mb-1">Registration Fee</p>
-          <p className="text-xl font-semibold text-white">{formatEth(MINT_PRICE)} ETH</p>
+          <p className="text-xl font-semibold text-[#10B981]">Free Forever (Gas Only)</p>
+          <p className="text-xs text-[#A0A0A0] mt-1">Your .FID domain is free forever. You only pay for gas fees.</p>
         </div>
       </div>
 
@@ -175,7 +188,7 @@ export default function MintForm() {
         <div className="space-y-4">
           <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-xl p-4">
             <p className="text-[#F59E0B] text-sm">
-              You are about to register <strong>{domainName}</strong> for {formatEth(MINT_PRICE)} ETH.
+              You are about to register <strong>{domainName}</strong> for free (gas only).
               This action cannot be undone.
             </p>
           </div>

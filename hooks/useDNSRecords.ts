@@ -39,6 +39,12 @@ export function useDNSRecords(tokenId: number | null) {
       return
     }
 
+    if (!DNS_REGISTRY_ADDRESS) {
+      setLoading(false)
+      console.error('DNS Registry contract address not configured')
+      return
+    }
+
     const allRecords: DNSRecord[] = []
     
     for (const [type, typeNum] of Object.entries(RECORD_TYPE_MAP)) {
@@ -94,6 +100,10 @@ export function useDNSRecords(tokenId: number | null) {
   const setRecord = async (recordType: RecordType, name: string, value: string) => {
     if (!tokenId) return
 
+    if (!DNS_REGISTRY_ADDRESS) {
+      throw new Error('DNS Registry contract address not configured')
+    }
+
     writeContract({
       address: DNS_REGISTRY_ADDRESS,
       abi: DNS_REGISTRY_ABI,
@@ -104,6 +114,10 @@ export function useDNSRecords(tokenId: number | null) {
 
   const deleteRecord = async (recordType: RecordType, name: string) => {
     if (!tokenId) return
+
+    if (!DNS_REGISTRY_ADDRESS) {
+      throw new Error('DNS Registry contract address not configured')
+    }
 
     writeContract({
       address: DNS_REGISTRY_ADDRESS,

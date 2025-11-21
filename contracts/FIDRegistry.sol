@@ -9,11 +9,11 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 /**
  * @title FIDRegistry
  * @dev ERC721 contract for .FID domain registration
- * Each FID can mint exactly one .FID domain for 0.001 ETH
+ * Each FID can mint exactly one .FID domain for free (gas only)
  */
 contract FIDRegistry is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     uint256 private _nextTokenId;
-    uint256 public constant MINT_PRICE = 0.001 ether;
+    uint256 public constant MINT_PRICE = 0; // Free forever, gas only
     
     // Mapping from FID to token ID
     mapping(uint256 => uint256) public fidToTokenId;
@@ -40,7 +40,8 @@ contract FIDRegistry is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
      * @param walletAddress The wallet address linked to this FID (must be msg.sender)
      */
     function mintFID(uint256 fid, address walletAddress) external payable nonReentrant {
-        require(msg.value == MINT_PRICE, "FIDRegistry: Incorrect payment amount");
+        require(msg.value == 0, "FIDRegistry: Minting is free, no payment required");
+        require(fid > 0, "FIDRegistry: Invalid FID");
         require(!fidMinted[fid], "FIDRegistry: FID already minted");
         require(walletAddress == msg.sender, "FIDRegistry: Wallet address mismatch");
         
@@ -114,7 +115,8 @@ contract FIDRegistry is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
      * @dev Withdraw contract balance (only owner)
      */
     function withdraw() external onlyOwner {
-        payable(owner()).transfer(address(this).balance);
+        (bool success, ) = payable(owner()).call{value: address(this).balance}("");
+        require(success, "FIDRegistry: Withdrawal failed");
     }
     
     // Override required by Solidity

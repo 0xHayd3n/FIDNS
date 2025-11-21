@@ -41,3 +41,6 @@ artifacts
 coverage
 coverage.json
 
+# rate limiting
+.rate-limit-store.json
+

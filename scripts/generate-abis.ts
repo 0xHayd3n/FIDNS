@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename)
 const artifactsDir = path.join(__dirname, '../artifacts/contracts')
 const abisDir = path.join(__dirname, '../abis')
 
-const contracts = ['FIDRegistry', 'DNSRegistry', 'FIDResolver']
+const contracts = ['FIDRegistry', 'DNSRegistry', 'FIDResolver', 'TLDRegistry', 'DomainFractionalization', 'DomainTreasury']
 
 contracts.forEach((contractName) => {
   const artifactPath = path.join(artifactsDir, `${contractName}.sol`, `${contractName}.json`)

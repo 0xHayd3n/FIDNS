@@ -46,7 +46,7 @@ export function useWallet() {
   const isBaseNetwork = chainId === base.id || chainId === baseSepolia.id
 
   const switchToBase = () => {
-    switchChain({ chainId: base.id })
+    switchChain({ chainId: baseSepolia.id })
   }
 
   return {
