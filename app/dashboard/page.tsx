@@ -67,7 +67,7 @@ export default function DashboardPage() {
       setLoading(true)
 
       // Load .FID domain
-      if (tokenId && tokenId > 0n) {
+      if (tokenId && typeof tokenId === 'bigint' && tokenId > 0n) {
         const domainName = formatDomainName(user.fid, user.username)
         setFidDomain({
           name: domainName,
