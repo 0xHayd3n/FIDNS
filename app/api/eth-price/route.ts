@@ -53,7 +53,7 @@ export async function GET() {
           },
         ],
         functionName: 'latestRoundData',
-      }),
+      }) as Promise<[bigint, bigint, bigint, bigint, bigint]>,
       publicClient.readContract({
         address: ETH_USD_PRICE_FEED as `0x${string}`,
         abi: [
@@ -70,8 +70,9 @@ export async function GET() {
     ])
 
     // Price comes with 8 decimals, convert to number
-    const priceInUSD = Number(price.answer) / 10 ** Number(decimals)
-    const timestamp = Number(price.updatedAt)
+    // latestRoundData returns: [roundId, answer, startedAt, updatedAt, answeredInRound]
+    const priceInUSD = Number(price[1]) / 10 ** Number(decimals) // answer is at index 1
+    const timestamp = Number(price[3]) // updatedAt is at index 3
 
     // Update cache
     cachedPrice = {
