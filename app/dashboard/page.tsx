@@ -5,6 +5,7 @@ import { initializeFarcaster } from '@/lib/farcaster'
 import { useFarcasterUser } from '@/hooks/useFarcasterUser'
 import { useWallet } from '@/hooks/useWallet'
 import { useReadContract, useReadContracts, usePublicClient } from 'wagmi'
+import { Abi } from 'viem'
 import { FID_REGISTRY_ADDRESS, FID_REGISTRY_ABI, TLD_REGISTRY_ADDRESS, TLD_REGISTRY_ABI } from '@/lib/contracts'
 import { formatDomainName } from '@/lib/farcaster'
 import { useDomainInfo } from '@/hooks/useDomainInfo'
@@ -84,7 +85,7 @@ export default function DashboardPage() {
           try {
             const contracts = ownerDomains.map(domainName => ({
               address: TLD_REGISTRY_ADDRESS,
-              abi: TLD_REGISTRY_ABI,
+              abi: TLD_REGISTRY_ABI as Abi,
               functionName: 'domainInfo' as const,
               args: [domainName] as const,
             }))
