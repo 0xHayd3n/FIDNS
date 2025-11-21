@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
     // Get email address
     let email = providedEmail
     if (!email) {
-      email = await getOwnerEmail(owner)
+      email = (await getOwnerEmail(owner)) || undefined
     }
 
     if (!email) {
