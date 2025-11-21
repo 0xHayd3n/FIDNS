@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
                 abi: TLD_REGISTRY_ABI,
                 functionName: 'domainInfo',
                 args: [domain],
-              })
+              }) as [address: `0x${string}`, registrationTimestamp: bigint, expirationTimestamp: bigint, yearsPurchased: number, tld: string]
 
               const expirationTimestamp = Number(domainInfo[2]) // expirationTimestamp is at index 2
               
