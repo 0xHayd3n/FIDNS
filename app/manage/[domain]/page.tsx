@@ -279,11 +279,11 @@ export default function ManageDomainPage() {
         )}
 
         {/* Treasury Section (TLD domains only) */}
-        {!isFIDDomain && domainName && tld && (
+        {!isFIDDomain && domainName && tld && tld.length > 0 ? (
           <div className="mb-6">
             <DomainTreasury domain={domainName} tld={tld} />
           </div>
-        )}
+        ) : null}
 
         {error && (
           <div className="bg-[#1A1A1A] border border-[#EF4444]/30 rounded-2xl p-4 mb-6">
